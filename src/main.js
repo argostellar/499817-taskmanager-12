@@ -11,8 +11,7 @@ import {generateTask} from "./mock/task.js";
 import {generateFilter} from "./mock/filter.js";
 import {render, RenderPosition} from "./utils.js";
 
-// initial commit: module5-task1
-console.log(`module5-task1`);
+// current branch: module5-task1
 
 const TASK_COUNT = 22;
 const TASK_COUNT_PER_STEP = 8;
