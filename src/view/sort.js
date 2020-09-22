@@ -1,4 +1,5 @@
 import AbstractView from "./abstract.js";
+import {SortType} from "../const.js";
 
 const createSortTemplate = () => {
   return `<div class="board__filter-list">
