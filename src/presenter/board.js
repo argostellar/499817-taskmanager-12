@@ -6,6 +6,8 @@ import TaskView from "../view/task.js";
 import TaskEditView from "../view/task-edit.js";
 import LoadMoreButtonView from "../view/load-more-button.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {sortTaskUp, sortTaskDown} from "../utils/task.js";
+import {SortType} from "../const.js";
 
 const TASK_COUNT_PER_STEP = 8;
 
@@ -13,6 +15,7 @@ export default class Board {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedTaskCount = TASK_COUNT_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
 
     this._boardComponent = new BoardView();
     this._sortComponent = new SortView();
@@ -26,6 +29,7 @@ export default class Board {
 
   init(boardTasks) {
     this._boardTasks = boardTasks.slice();
+    this._sourcedBoardTasks = boardTasks.slice();
 
     render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
     render(this._boardComponent, this._taskListComponent, RenderPosition.BEFOREEND);
@@ -33,9 +37,41 @@ export default class Board {
     this._renderBoard();
   }
 
+  _sortTasks(sortType) {
+    switch (sortType) {
+      case SortType.DATE_UP:
+        this._boardTasks.sort(sortTaskUp);
+        break;
+      case SortType.DATE_DOWN:
+        this._boardTasks.sort(sortTaskDown);
+        break;
+      default:
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _boardTasks исходный массив
+        this._boardTasks = this._sourcedBoardTasks.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortTasks(sortType);
+    this._clearTaskList();
+    this._renderTaskList();
+  }
+
   _renderSort() {
     // Метод для рендеринга сортировки
     render(this._boardComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _clearTaskList() {
+    this._taskListComponent.getElement().innerHTML = ``;
+    this._renderedTaskCount = TASK_COUNT_PER_STEP;
   }
 
   _renderTask(task) {
