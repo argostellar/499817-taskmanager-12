@@ -5,8 +5,6 @@ import {generateFilter} from "./mock/filter.js";
 import BoardPresenter from "./presenter/board.js";
 import {render, RenderPosition} from "./utils/render.js";
 
-// current branch: module5-task1
-
 const TASK_COUNT = 22;
 
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
